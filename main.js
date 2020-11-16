@@ -75,8 +75,8 @@ function optimizeLocation(start, vectorSource, extent) {
 }
 
 map.on('moveend', function (evt) {
-    var map = evt.map;
-    var extent = map.getView().calculateExtent(map.getSize());
+    var mapEvt = evt.map;
+    var extent = mapEvt.getView().calculateExtent(mapEvt.getSize());
 
     var bottomLeft = ol.proj.toLonLat(ol.extent.getBottomLeft(extent));
     var topRight = ol.proj.toLonLat(ol.extent.getTopRight(extent));
@@ -91,7 +91,7 @@ map.on('moveend', function (evt) {
         }));
         parkingLotSource.addFeatures(aFeatures);
 
-        optimizeLocation(map.getView().getCenter(), parkingLotSource, extent);
+        optimizeLocation(mapEvt.getView().getCenter(), parkingLotSource, extent);
     }).catch(e => {
         console.error(e);
     });
