@@ -21,6 +21,43 @@ var optimizedLocationLayer = new ol.layer.Vector({
     source: optimizedLocationSource
 });
 
+var ParkingLotColoredDistanceLayer = (function (Layer) {
+    function ParkingLotColoredDistanceLayer(options) {
+      Layer.call(this, options ? options : {});
+    }
+
+    if ( Layer ) ParkingLotColoredDistanceLayer.__proto__ = Layer;
+    ParkingLotColoredDistanceLayer.prototype = Object.create( Layer && Layer.prototype );
+    ParkingLotColoredDistanceLayer.prototype.constructor = ParkingLotColoredDistanceLayer;
+
+    ParkingLotColoredDistanceLayer.prototype.getSourceState = function getSourceState () {
+      return 'ready';
+    };
+
+    ParkingLotColoredDistanceLayer.prototype.render = function render (frameState, target) {
+        var width = frameState.size[0];
+        var height = frameState.size[1];
+        const layerClassName = this.getClassName();
+        if (
+            target &&
+            target.style.opacity === '' &&
+            target.className === layerClassName
+          ) {
+          const canvas = target.firstElementChild;
+          if (canvas instanceof HTMLCanvasElement) {
+            context = canvas.getContext('2d');
+            context.fillStyle = "rgba(255,0,0,0.5)";
+            for(let x=0;x<width;x++) {
+                for(let y=0;y<height;y++) {
+                    context.fillRect( x, y, 1, 1 );
+                }
+            }
+          }
+        }
+    };
+    return ParkingLotColoredDistanceLayer;
+}(ol.layer.Layer));
+
 
 var map = new ol.Map({
 target: 'map',
@@ -29,7 +66,8 @@ layers: [
       source: new ol.source.OSM()
     }),
     parkingLotLayer,
-    optimizedLocationLayer
+    optimizedLocationLayer,
+    new ParkingLotColoredDistanceLayer()
 ],
 view: new ol.View({
     // Center Berlin Charlottenburg
